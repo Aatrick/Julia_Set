@@ -120,8 +120,12 @@ if __name__ == "__main__":
     if type == "j":
         choice=input("Voulez-vous de l'aide (y/n) : ")
         if choice == "y":
-            img=Image.open("Julia-Teppich.png", "r")
-            img.show()
+            try:
+                img=Image.open("Julia-Teppich.png", "r")
+                img.show()
+            except (FileNotFoundError, IOError):
+                print("Fichier non trouvé")
+                pass
         else :
             pass
 
