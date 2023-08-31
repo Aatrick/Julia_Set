@@ -34,7 +34,7 @@ def julia_set(c: complex):
             print(f"Progression : {ix / x_res * 100:.2f}%", end="\r")
     ax.imshow(julia, aspect='auto', cmap=cm.CMRmap)
 
-def zoom_main(zoom_factor=1.1):
+def zoom_main():
     global xmin, xmax, ymin, ymax, width, height
     n=int(input("Entrer le nombre de zoom : "))
     d=float(input("Entrer la durée de chaque image : "))
@@ -42,36 +42,63 @@ def zoom_main(zoom_factor=1.1):
     if dir == "c":
         pass
     elif dir == "n":
-        ymax = -0.75
+        ymax = -0.5
         xmax = 0
-        ymin = 0.75
-        xmin = 1.5
+        ymin = 0.5
+        xmin = 1
     elif dir == "s":
-        ymax = 0.75
-        xmax = 1.5
-        ymin = -0.75
+        ymax = 0.5
+        xmax = 1
+        ymin = -0.5
         xmin = 0
     elif dir == "o":
         ymax = 0
-        xmax = -0.75
-        ymin = 1.5
-        xmin = 0.75
+        xmax = -0.5
+        ymin = 1
+        xmin = 0.5
     elif dir == "e":
-        ymax = 1.5
-        xmax = 0.75
+        ymax = 1
+        xmax = 0.5
         ymin = 0
-        xmin = -0.75
+        xmin = -0.5
     else:
         pass
+    width = (xmax - xmin)
+    height = (ymax - ymin)
     for i in range(n):
         julia_set(c)
         plt.savefig(f"julia{str(i)}.png", dpi = 1200)
-        xmin /= zoom_factor
-        xmax /= zoom_factor
-        ymin /= zoom_factor
-        ymax /= zoom_factor
-        width = xmax - xmin
-        height = ymax - ymin
+        if dir == "c":
+            width = (xmax - xmin)/1.1
+            height = (ymax - ymin)/1.1
+        elif dir == "n":
+            ymax += 0.03
+            ymin -= 0.03
+            xmax += 0.03
+            xmin -= 0.03
+            width = (xmax - xmin)
+            height = (ymax - ymin)
+        elif dir == "s":
+            ymax -= 0.03
+            ymin += 0.03
+            xmax -= 0.03
+            xmin += 0.03
+            width = (xmax - xmin)
+            height = (ymax - ymin)
+        elif dir == "o":
+            ymax += 0.03
+            ymin -= 0.03
+            xmax += 0.03
+            xmin -= 0.03
+            width = (xmax - xmin)
+            height = (ymax - ymin)
+        elif dir == "e":
+            ymax -= 0.03
+            ymin += 0.03
+            xmax -= 0.03
+            xmin += 0.03
+            width = (xmax - xmin)
+            height = (ymax - ymin)
         plt.close()
     images = [imageio.imread(f"julia{str(i)}.png") for i in range(n)]
     imageio.mimsave("julia1.gif", images, duration=d)
@@ -98,7 +125,6 @@ def gif(c):
     for i in range(n):
         os.remove(f"julia{str(i)}.png")
         os.remove(f"julia2.{str(i)}.png")
-
 
 if __name__ == "__main__":
     reso=input("Entrer la résolution (100, 500, 1000, 2000, else) : ")
