@@ -4,7 +4,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import PIL.Image as Image
-import sys
 
 x_res, y_res = 500, 500
 xmin, xmax = -1.5, 1.5
@@ -35,25 +34,6 @@ def julia_set(c: complex):
             julia[ix, iy] = iteration_ratio
             print(f"Progression : {ix / x_res * 100:.2f}%", end="\r")
     ax.imshow(julia, aspect='auto', cmap=cm.CMRmap)
-    julia_name = f"julia_{c.real:.2f}_{c.imag:.2f}.png"
-    plt.savefig(julia_name, dpi = 1200)
-
-def mandelbrot_set():
-    mandelbrot = np.zeros((x_res, y_res))
-    for ix in range(x_res):
-        for iy in range(y_res):
-            c = complex(ix / x_res * width + xmin, #mandelbrot
-                        iy / y_res * height + ymin) #mandelbrot
-            z = 0 #mandelbrot
-            iteration = 0
-            while abs(z) <= z_abs_max and iteration < max_iter:
-                z = z**2 + c
-                iteration += 1
-            iteration_ratio = iteration / max_iter    
-            mandelbrot[ix, iy] = iteration_ratio
-            print(f"Progression : {ix / x_res * 100:.2f}%", end="\r")
-    ax.imshow(mandelbrot, aspect='auto', cmap=cm.CMRmap)
-    plt.savefig("mandelbrot.png", dpi = 1200)
 
 def zoom(zoom_factor):
     global xmin, xmax, ymin, ymax, width, height
@@ -68,19 +48,7 @@ def zoom_main():
     n=int(input("Entrer le nombre de zoom : "))
     d=float(input("Entrer la durée de chaque image : "))
     for i in range(n+1):
-        julia = np.zeros((x_res, y_res))
-        for ix in range(x_res):
-            for iy in range(y_res):
-                z = complex(ix / x_res * width + xmin,
-                            iy / y_res * height + ymin)
-                iteration = 0
-                while abs(z) <= z_abs_max and iteration < max_iter:
-                    z = z**2 + c
-                    iteration += 1
-                iteration_ratio = iteration / max_iter    
-                julia[ix, iy] = iteration_ratio
-                print(f"Progression : {ix / x_res * 100:.2f}%", end="\r")
-        ax.imshow(julia, aspect='auto', cmap=cm.CMRmap)
+        julia_set(c)
         plt.savefig(f"julia{str(i)}.png", dpi = 1200)
         zoom(1.1)
         plt.close()
@@ -93,37 +61,13 @@ def gif(c):
     n=int(input("Entrer le nombre d'images : "))
     d=float(input("Entrer la durée de chaque image : "))
     for i in range(n+1):
-        julia = np.zeros((x_res, y_res))
-        for ix in range(x_res):
-            for iy in range(y_res):
-                z = complex(ix / x_res * width + xmin,
-                            iy / y_res * height + ymin)
-                iteration = 0
-                while abs(z) <= z_abs_max and iteration < max_iter:
-                    z = z**2 + c
-                    iteration += 1
-                iteration_ratio = iteration / max_iter    
-                julia[ix, iy] = iteration_ratio
-                print(f"Progression : {ix / x_res * 100:.2f}%", end="\r")
-        ax.imshow(julia, aspect='auto', cmap=cm.CMRmap)
+        julia_set(c)
         plt.savefig(f"julia{str(i)}.png", dpi = 1200)
         c += 0 + 0.001j
         plt.close()
     for i in range(n+1):
         c += 0 - 0.001j
-        julia = np.zeros((x_res, y_res))
-        for ix in range(x_res):
-            for iy in range(y_res):
-                z = complex(ix / x_res * width + xmin,
-                            iy / y_res * height + ymin)
-                iteration = 0
-                while abs(z) <= z_abs_max and iteration < max_iter:
-                    z = z**2 + c
-                    iteration += 1
-                iteration_ratio = iteration / max_iter    
-                julia[ix, iy] = iteration_ratio
-                print(f"Progression : {ix / x_res * 100:.2f}%", end="\r")
-        ax.imshow(julia, aspect='auto', cmap=cm.CMRmap)
+        julia_set(c)
         plt.savefig(f"julia2.{str(i)}.png", dpi = 1200)
         plt.close()
     images = [imageio.imread(f"julia{str(i)}.png") for i in range(n+1)]
@@ -136,7 +80,6 @@ def gif(c):
 
 
 if __name__ == "__main__":
-    type=input("Entrer le type de fractale (julia, mandelbrot) : ")
     reso=input("Entrer la résolution (100, 500, 1000, 2000, else) : ")
     if reso == "a":
         x_res, y_res = 100, 100
@@ -149,39 +92,26 @@ if __name__ == "__main__":
     elif reso == "e":
         x_res, y_res = int(input("Entrer la résolution x : ")), int(input("Entrer la résolution y : "))
 
-    if type == "j":
-        choice=input("Voulez-vous de l'aide (y/n) : ")
-        if choice == "y":
-            try:
-                img=Image.open("Julia-Teppich.png", "r")
-                img.show()
-            except (FileNotFoundError, IOError):
-                print("Fichier non trouvé")
-                pass
-        else :
-            pass
+    choice=input("Voulez-vous de l'aide (y/n) : ")
+    if choice == "y":
+        img=Image.open("Julia-Teppich.png", "r")
+        img.show()
+    else :
+        pass
 
-        c_choice=input("Voulez-vous choisir la constante c (y/n/r) : ")
-        if c_choice == "y":
-            c=complex(input("Entrer la constante c : "))
-        if c_choice == "n":
-            c=-0.4 + 0.59j
-        if c_choice == "r":
-            c=np.random.uniform(-1.5,1.5)+np.random.uniform(-1.5,1.5)*1j
-        julia_set(c)
-        plt.show()
-
-        mode=input("Entrer le mode (zoom, gif) : ")
-        if mode == "z":
-            zoom_main()
-        elif mode == "g":
-            gif(c)
-        else:
-            pass
-
-    elif type == "m":
-        mandelbrot_set()
-        plt.show()
+    c_choice=input("Voulez-vous choisir la constante c (y/n/r) : ")
+    if c_choice == "y":
+        c=complex(input("Entrer la constante c : "))
+    if c_choice == "n":
+        c=-0.8+0.16j
+    if c_choice == "r":
+        c=np.random.uniform(-1.5,1.5)+np.random.uniform(-1.5,1.5)*1j
+    julia_set(c)
+    plt.show()
+    mode=input("Entrer le mode (zoom, gif) : ")
+    if mode == "z":
+        zoom_main()
+    elif mode == "g":
+        gif(c)
     else:
-        print("Erreur")
-        sys.exit(1)
+        pass
