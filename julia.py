@@ -78,6 +78,9 @@ def zoom_main():
         plt.close()
     images = [imageio.imread(f"julia{str(i)}.png") for i in range(n+1)]
     imageio.mimsave("julia1.gif", images, duration=0.1)
+    vid=Image.open("julia1.gif")
+    vid2=vid.crop((143,58,513,427))
+    vid2.save("julia1.gif")
     for i in range(n+1):
         os.remove(f"julia{str(i)}.png")
 
@@ -101,6 +104,12 @@ def gif(c):
     for i in range(n+1):
         os.remove(f"julia{str(i)}.png")
         os.remove(f"julia2.{str(i)}.png")
+
+def crop_a():
+    img=Image.open("Figure_1.png", "r")
+    img2=img.crop((143,58,513,427))
+    img2.save("Figure_2.png")
+
 
 
 if __name__ == "__main__":
