@@ -14,13 +14,12 @@ height = ymax - ymin
 z_abs_max = 10
 max_iter = 256
 
-fig = plt.figure(frameon=False)
-fig.set_size_inches(width,height)
-ax = plt.Axes(fig, [0., 0., 1., 1.])
-ax.set_axis_off()
-fig.add_axes(ax)
-
 def julia_set(c: complex):
+    fig = plt.figure(frameon=False)
+    fig.set_size_inches(width,height)
+    ax = plt.Axes(fig, [0., 0., 1., 1.])
+    ax.set_axis_off()
+    fig.add_axes(ax)
     julia = np.zeros((x_res, y_res))
     for ix in range(x_res):
         for iy in range(y_res):
