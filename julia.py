@@ -34,22 +34,44 @@ def julia_set(c: complex):
             print(f"Progression : {ix / x_res * 100:.2f}%", end="\r")
     ax.imshow(julia, aspect='auto', cmap=cm.CMRmap)
 
-def zoom(zoom_factor):
+def zoom_main(zoom_factor=1.1):
     global xmin, xmax, ymin, ymax, width, height
-    xmin /= zoom_factor
-    xmax /= zoom_factor
-    ymin /= zoom_factor
-    ymax /= zoom_factor
-    width = xmax - xmin
-    height = ymax - ymin
-
-def zoom_main():
     n=int(input("Entrer le nombre de zoom : "))
     d=float(input("Entrer la durée de chaque image : "))
+    dir=input("Entrer la direction (centre, nord, sud, est, ouest) : ")
+    if dir == "c":
+        pass
+    elif dir == "n":
+        ymax = -0.75
+        xmax = 0
+        ymin = 0.75
+        xmin = 1.5
+    elif dir == "s":
+        ymax = 0.75
+        xmax = 1.5
+        ymin = -0.75
+        xmin = 0
+    elif dir == "o":
+        ymax = 0
+        xmax = -0.75
+        ymin = 1.5
+        xmin = 0.75
+    elif dir == "e":
+        ymax = 1.5
+        xmax = 0.75
+        ymin = 0
+        xmin = -0.75
+    else:
+        pass
     for i in range(n):
         julia_set(c)
         plt.savefig(f"julia{str(i)}.png", dpi = 1200)
-        zoom(1.1)
+        xmin /= zoom_factor
+        xmax /= zoom_factor
+        ymin /= zoom_factor
+        ymax /= zoom_factor
+        width = xmax - xmin
+        height = ymax - ymin
         plt.close()
     images = [imageio.imread(f"julia{str(i)}.png") for i in range(n)]
     imageio.mimsave("julia1.gif", images, duration=d)
