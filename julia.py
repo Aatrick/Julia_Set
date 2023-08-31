@@ -46,34 +46,34 @@ def zoom(zoom_factor):
 def zoom_main():
     n=int(input("Entrer le nombre de zoom : "))
     d=float(input("Entrer la durée de chaque image : "))
-    for i in range(n+1):
+    for i in range(n):
         julia_set(c)
         plt.savefig(f"julia{str(i)}.png", dpi = 1200)
         zoom(1.1)
         plt.close()
-    images = [imageio.imread(f"julia{str(i)}.png") for i in range(n+1)]
+    images = [imageio.imread(f"julia{str(i)}.png") for i in range(n)]
     imageio.mimsave("julia1.gif", images, duration=d)
-    for i in range(n+1):
+    for i in range(n):
         os.remove(f"julia{str(i)}.png")
 
 def gif(c):
     n=int(input("Entrer le nombre d'images : "))
     d=float(input("Entrer la durée de chaque image : "))
-    for i in range(n+1):
+    for i in range(n):
         julia_set(c)
         plt.savefig(f"julia{str(i)}.png", dpi = 1200)
         c += 0 + 0.001j
         plt.close()
-    for i in range(n+1):
+    for i in range(n):
         c += 0 - 0.001j
         julia_set(c)
         plt.savefig(f"julia2.{str(i)}.png", dpi = 1200)
         plt.close()
-    images = [imageio.imread(f"julia{str(i)}.png") for i in range(n+1)]
-    images2 = [imageio.imread(f"julia2.{str(i)}.png") for i in range(n+1)]
+    images = [imageio.imread(f"julia{str(i)}.png") for i in range(n)]
+    images2 = [imageio.imread(f"julia2.{str(i)}.png") for i in range(n)]
     images.extend(images2)
     imageio.mimsave("julia.gif", images, duration=d)
-    for i in range(n+1):
+    for i in range(n):
         os.remove(f"julia{str(i)}.png")
         os.remove(f"julia2.{str(i)}.png")
 
