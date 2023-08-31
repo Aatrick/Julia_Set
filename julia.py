@@ -16,7 +16,7 @@ max_iter = 256
 
 def julia_set(c: complex):
     fig = plt.figure(frameon=False)
-    fig.set_size_inches(width,height)
+    fig.set_size_inches(5,5)
     ax = plt.Axes(fig, [0., 0., 1., 1.])
     ax.set_axis_off()
     fig.add_axes(ax)
