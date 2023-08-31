@@ -171,15 +171,11 @@ if __name__ == "__main__":
         julia_set(c)
         plt.show()
 
-        mode=input("Entrer le mode (zoom, gif, s) : ")
+        mode=input("Entrer le mode (zoom, gif) : ")
         if mode == "z":
             zoom_main()
-            vid=Image.open("julia1.gif")
         elif mode == "g":
             gif(c)
-            vid=Image.open("julia.gif")
-        elif mode == "s":
-            plt.savefig("julia.png", dpi = 1200)
         else:
             pass
 
