@@ -21,16 +21,15 @@ The julia.py file is completely callable from a Powershell terminal and will ask
 
 ![zoom cmd](https://github.com/Aatrick/Julia_Set/assets/113598245/af520068-b741-4ad2-905f-dab6503a3da5)
 
-
-
-
+-------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Other than simply plotting images and saving them, the generator is also able to generate GIFs, there are two modes for now, one zooming progressively into one part of the fractal :
 
-
+![zoom gif](https://github.com/Aatrick/Julia_Set/assets/113598245/79049b69-3945-4ab6-8410-a20657f8f650)
 
 And there's the second mode, making the c value fluctuate, to see how these changes impact the output.
 
+![gif b2b](https://github.com/Aatrick/Julia_Set/assets/113598245/9538663b-d8b7-49dd-89c2-0f312d83af40)
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------
 
