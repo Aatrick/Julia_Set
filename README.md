@@ -1,8 +1,8 @@
-# Julia_Set
+## Julia_Set
 Python fractal generator based on the Julia set
 
 
-HOW DOES IT WORK 
+>HOW DOES IT WORK 
 
 The julia_set function works by creating a 2D array of size x_res*y_res, and then filling it with the iteration ratio of each pixel (the number of iterations it took to reach the max_iter value) and then plotting it using imshow from matplotlib (the iteration ratio is used to determine the color of each pixel).
 
@@ -33,12 +33,13 @@ And there's the second mode, making the c value fluctuate, to see how these chan
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------
 
-INSTALLATION 
+#INSTALLATION 
 
 Simply git clone this repository https://github.com/Aatrick/Julia_Set.git
 
 then do in the cloned directory :
-
+```sh
 pip install -r requirements.txt
+```
 
 and you should be ready to go !
