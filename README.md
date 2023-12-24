@@ -1,4 +1,4 @@
-## Julia_Set
+ ## Julia_Set
 Python fractal generator based on the Julia set
 
 
@@ -33,7 +33,7 @@ And there's the second mode, making the c value fluctuate, to see how these chan
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------
 
-#INSTALLATION 
+# INSTALLATION 
 
 Simply git clone this repository https://github.com/Aatrick/Julia_Set.git
 
