@@ -1,4 +1,9 @@
 imageio
 numpy
 matplotlib
-PIL
+Pillow
+numba
+tqdm
+PyQt5
+pyqtgraph
+joblib
