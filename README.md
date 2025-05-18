@@ -1,45 +1,91 @@
- ## Julia_Set
-Python fractal generator based on the Julia set
+# Julia Set Explorer
 
+Python fractal generator based on the Julia set with both command-line and graphical user interfaces.
 
->HOW DOES IT WORK 
+## Overview
 
-The julia_set function works by creating a 2D array of size x_res*y_res, and then filling it with the iteration ratio of each pixel (the number of iterations it took to reach the max_iter value) and then plotting it using imshow from matplotlib (the iteration ratio is used to determine the color of each pixel).
+This project provides tools to generate, explore, and animate beautiful Julia set fractals. It features:
 
-The generator works with all types of resolutions although it is recommended to use even and similar numbers for x_res and y_res.
+- High-performance calculation using Numba JIT compilation
+- Interactive GUI for real-time parameter adjustments
+- Command-line interface for batch processing
+- Support for creating high-resolution images
+- Animation capabilities for creating GIFs
 
+## How It Works
 
-Here's some example with c = -0.8 + 0.16j and a resolution of 100x100 :
+The Julia set is a fractal named after the French mathematician Gaston Julia. For each point (x,y) in the complex plane, the algorithm applies the formula z = z² + c repeatedly, where c is a complex constant. The number of iterations before z "escapes" (exceeds a certain value) determines the color of each pixel.
 
+### Command-Line Interface
+
+The `julia.py` file can be executed from a terminal to generate Julia set images with various parameters:
+
+![Command Line Interface](https://github.com/Aatrick/Julia_Set/assets/113598245/af520068-b741-4ad2-905f-dab6503a3da5)
+
+### GUI Interface
+
+The project now features a full graphical interface (`julia_ui.py`) that allows for interactive exploration:
+
+- Real-time updates when changing parameters
+- Zoom and pan functionality
+- Adjustable resolution, iterations, and colormaps
+- Option to save images or create animations
+- Calculation caching for improved performance
+
+![Interactive GUI](ui.png)
+
+## Examples
+
+### Different Resolutions
+
+The same Julia set (c = -0.8 + 0.16j) at different resolutions:
+
+Low resolution (100x100):
 ![100x100](https://github.com/Aatrick/Julia_Set/assets/113598245/3324f05a-7db3-4c25-b2de-9b15d1823499)
 
-And here's the same c value but 2000x2000 as resolution instead :
-
+High resolution (2000x2000):
 ![2000x2000](https://github.com/Aatrick/Julia_Set/assets/113598245/57d16ff2-9c50-411e-aad6-e1f07ddedc80)
 
-The julia.py file is completely callable from a Powershell terminal and will ask, how you want it to behave.
+### Animations
 
-![zoom cmd](https://github.com/Aatrick/Julia_Set/assets/113598245/af520068-b741-4ad2-905f-dab6503a3da5)
+The generator can create two types of animated GIFs:
 
--------------------------------------------------------------------------------------------------------------------------------------------------------
+1. **Zoom Animation**: Progressively zooms into a part of the fractal
+![Zoom Animation](https://github.com/Aatrick/Julia_Set/assets/113598245/79049b69-3945-4ab6-8410-a20657f8f650)
 
-Other than simply plotting images and saving them, the generator is also able to generate GIFs, there are two modes for now, one zooming progressively into one part of the fractal :
+2. **Parameter Animation**: Shows how changes to the complex constant c affect the fractal
+![Parameter Animation](https://github.com/Aatrick/Julia_Set/assets/113598245/9538663b-d8b7-49dd-89c2-0f312d83af40)
 
-![zoom gif](https://github.com/Aatrick/Julia_Set/assets/113598245/79049b69-3945-4ab6-8410-a20657f8f650)
+## Installation
 
-And there's the second mode, making the c value fluctuate, to see how these changes impact the output.
+1. Clone this repository:
+```
+git clone https://github.com/Aatrick/Julia_Set.git
+```
 
-![gif b2b](https://github.com/Aatrick/Julia_Set/assets/113598245/9538663b-d8b7-49dd-89c2-0f312d83af40)
-
--------------------------------------------------------------------------------------------------------------------------------------------------------
-
-# INSTALLATION 
-
-Simply git clone this repository https://github.com/Aatrick/Julia_Set.git
-
-then do in the cloned directory :
-```sh
+2. Install the required dependencies:
+```
 pip install -r requirements.txt
 ```
 
-and you should be ready to go !
+## Usage
+
+### Command-Line Interface
+```
+python julia.py
+```
+
+### Graphical Interface
+```
+python julia_ui.py
+```
+Or run the provided batch file:
+```
+run_julia_ui.bat
+```
+
+## Performance Notes
+
+- The implementation uses Numba for significant performance acceleration
+- Calculations are cached to improve responsiveness when exploring
+- Multi-core processing is utilized for maximum performance

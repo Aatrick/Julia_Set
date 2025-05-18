@@ -5,8 +5,8 @@ import os
 import sys
 import tempfile
 
-import matplotlib.pyplot as plt
 import matplotlib.cm as cm
+import matplotlib.pyplot as plt
 import numpy as np
 import pyqtgraph as pg
 from joblib import Memory
@@ -63,10 +63,21 @@ class JuliaCalculatorThread(QThread):
     result_ready = pyqtSignal(np.ndarray)
     error = pyqtSignal(str)
 
-    def __init__(self, x_res=500, y_res=500, 
-                 xmin=-1.5, xmax=1.5, ymin=-1.5, ymax=1.5,
-                 z_abs_max=10, max_iter=256, c_real=-0.8, c_imag=0.156,
-                 power=2, formula_type="standard"):
+    def __init__(
+        self,
+        x_res=500,
+        y_res=500,
+        xmin=-1.5,
+        xmax=1.5,
+        ymin=-1.5,
+        ymax=1.5,
+        z_abs_max=10,
+        max_iter=256,
+        c_real=-0.8,
+        c_imag=0.156,
+        power=2,
+        formula_type="standard",
+    ):
         super().__init__()
         self.mutex = QMutex()
         self.c_real = c_real
@@ -83,9 +94,21 @@ class JuliaCalculatorThread(QThread):
         self.formula_type = formula_type
         self.running = False
 
-    def update_params(self, x_res, y_res, xmin, xmax, ymin, ymax, 
-                     z_abs_max, max_iter, c_real, c_imag,
-                     power=2, formula_type="standard"):
+    def update_params(
+        self,
+        x_res,
+        y_res,
+        xmin,
+        xmax,
+        ymin,
+        ymax,
+        z_abs_max,
+        max_iter,
+        c_real,
+        c_imag,
+        power=2,
+        formula_type="standard",
+    ):
         """Update parameters for the calculation"""
         self.mutex.lock()
         self.c_real = c_real
@@ -107,7 +130,7 @@ class JuliaCalculatorThread(QThread):
         self.mutex.lock()
         self.running = False
         self.mutex.unlock()
-        
+
         # Wait for the thread to finish
         if self.isRunning():
             self.wait()  # Wait for thread to finish
@@ -130,33 +153,33 @@ class JuliaCalculatorThread(QThread):
         formula_type = self.formula_type
         self.running = True
         self.mutex.unlock()
-        
+
         # Check if we should stop before heavy calculation
         if not self.running:
             return
-            
+
         try:
             # Calculate the Julia set
             result = compute_julia_numba(
-                x_res, 
+                x_res,
                 y_res,
-                xmin, 
-                xmax, 
-                ymin, 
+                xmin,
+                xmax,
+                ymin,
                 ymax,
-                z_abs_max, 
+                z_abs_max,
                 max_iter,
-                c_real, 
+                c_real,
                 c_imag,
                 power,
-                formula_type
+                formula_type,
             )
-            
+
             # Check if we've been asked to stop
             self.mutex.lock()
             still_running = self.running
             self.mutex.unlock()
-            
+
             if still_running:
                 # Emit the result signal
                 self.result_ready.emit(result)
@@ -165,7 +188,7 @@ class JuliaCalculatorThread(QThread):
             self.mutex.lock()
             still_running = self.running
             self.mutex.unlock()
-            
+
             if still_running:
                 self.error.emit(str(e))
 
@@ -267,23 +290,23 @@ class JuliaSetUI(QMainWindow):
         super().__init__()
         self.init_ui()
         self.setup_julia_calculation()
-        
+
         # Connect aboutToQuit signal to clean up resources
         QApplication.instance().aboutToQuit.connect(self.cleanup_resources)
-        
+
     def closeEvent(self, event):
         """Handle window close event"""
         # Make sure calculation thread is stopped before closing
-        if hasattr(self, 'julia_thread') and self.julia_thread is not None:
+        if hasattr(self, "julia_thread") and self.julia_thread is not None:
             self.julia_thread.stop()
             # wait() is called inside stop()
-        
+
         # Stop the calculation timer if active
-        if hasattr(self, 'calculation_timer') and self.calculation_timer.isActive():
+        if hasattr(self, "calculation_timer") and self.calculation_timer.isActive():
             self.calculation_timer.stop()
-            
+
         event.accept()
-        
+
     def init_ui(self):
         # Main window setup
         self.setWindowTitle("Interactive Julia Set Explorer")
@@ -322,9 +345,11 @@ class JuliaSetUI(QMainWindow):
         c_layout.addWidget(self.c_real_label, 0, 2)
         self.c_real_slider = QSlider(Qt.Horizontal)
         self.c_real_slider.setRange(-200, 200)
-        self.c_real_slider.setValue(int(DEFAULT_C[0] * 100))
+        self.c_real_slider.setValue(int(DEFAULT_C[0] * 200))
         self.c_real_slider.valueChanged.connect(
-            lambda: self.update_param_and_recalculate('c_real', self.c_real_slider.value() / 100.0)
+            lambda: self.update_param_and_recalculate(
+                "c_real", self.c_real_slider.value() / 200.0
+            )
         )
         c_layout.addWidget(self.c_real_slider, 1, 0, 1, 3)
 
@@ -334,9 +359,11 @@ class JuliaSetUI(QMainWindow):
         c_layout.addWidget(self.c_imag_label, 2, 2)
         self.c_imag_slider = QSlider(Qt.Horizontal)
         self.c_imag_slider.setRange(-200, 200)
-        self.c_imag_slider.setValue(int(DEFAULT_C[1] * 100))
+        self.c_imag_slider.setValue(int(DEFAULT_C[1] * 200))
         self.c_imag_slider.valueChanged.connect(
-            lambda: self.update_param_and_recalculate('c_imag', self.c_imag_slider.value() / 100.0)
+            lambda: self.update_param_and_recalculate(
+                "c_imag", self.c_imag_slider.value() / 200.0
+            )
         )
         c_layout.addWidget(self.c_imag_slider, 3, 0, 1, 3)
 
@@ -393,7 +420,7 @@ class JuliaSetUI(QMainWindow):
         self.max_iter_spinbox.setSingleStep(10)
         self.max_iter_spinbox.setValue(DEFAULT_MAX_ITER)
         self.max_iter_spinbox.valueChanged.connect(
-            lambda value: self.update_param_and_recalculate('max_iter', value)
+            lambda value: self.update_param_and_recalculate("max_iter", value)
         )
         equation_layout.addWidget(self.max_iter_spinbox, 0, 1, 1, 2)
 
@@ -403,7 +430,7 @@ class JuliaSetUI(QMainWindow):
         self.power_spinbox.setRange(2, 10)
         self.power_spinbox.setValue(DEFAULT_POWER)
         self.power_spinbox.valueChanged.connect(
-            lambda value: self.update_param_and_recalculate('power', value)
+            lambda value: self.update_param_and_recalculate("power", value)
         )
         equation_layout.addWidget(self.power_spinbox, 1, 1, 1, 2)
 
@@ -412,7 +439,7 @@ class JuliaSetUI(QMainWindow):
         self.formula_combobox = QComboBox()
         self.formula_combobox.addItems(["Standard", "Burning Ship", "Tricorn"])
         self.formula_combobox.currentIndexChanged.connect(
-            lambda index: self.update_param_and_recalculate('formula_type', index)
+            lambda index: self.update_param_and_recalculate("formula_type", index)
         )
         equation_layout.addWidget(self.formula_combobox, 2, 1, 1, 2)
 
@@ -484,51 +511,51 @@ class JuliaSetUI(QMainWindow):
         self.power = DEFAULT_POWER
         self.z_abs_max = DEFAULT_Z_ABS_MAX
         self.formula_type = "standard"
-        
+
         # Store the current result
         self.current_result = None
-        
+
         # Set up a calculation timer for debouncing slider movements
         self.calculation_timer = QTimer()
         self.calculation_timer.setSingleShot(True)
         self.calculation_timer.timeout.connect(self.trigger_calculation)
-        
+
         # Initialize calculation thread
         self.julia_thread = JuliaCalculatorThread()
         self.julia_thread.result_ready.connect(self.update_display_with_result)
         self.julia_thread.error.connect(lambda msg: print(f"Calculation error: {msg}"))
-        
+
         # We'll trigger the initial calculation after the setup is complete
         QTimer.singleShot(100, self.trigger_calculation)
-        
+
     def cleanup_resources(self):
         """Clean up resources before application exit"""
         # Stop calculation thread
-        if hasattr(self, 'julia_thread') and self.julia_thread is not None:
+        if hasattr(self, "julia_thread") and self.julia_thread is not None:
             self.julia_thread.stop()
             # Thread.wait() is called in the stop() method
-            
+
         # Stop timers
-        if hasattr(self, 'calculation_timer') and self.calculation_timer.isActive():
+        if hasattr(self, "calculation_timer") and self.calculation_timer.isActive():
             self.calculation_timer.stop()
 
     def update_param_and_recalculate(self, param_name=None, value=None):
         """Update parameters and trigger recalculation"""
         # Update the parameter value if provided
         if param_name and value is not None:
-            if param_name == 'c_real':
+            if param_name == "c_real":
                 self.c_real = value
                 self.c_real_label.setText(f"{value:.3f}")
-            elif param_name == 'c_imag':
+            elif param_name == "c_imag":
                 self.c_imag = value
                 self.c_imag_label.setText(f"{value:.3f}")
-            elif param_name == 'max_iter':
+            elif param_name == "max_iter":
                 self.max_iter = int(value)
                 self.max_iter_spinbox.setValue(int(value))
-            elif param_name == 'power':
+            elif param_name == "power":
                 self.power = int(value)
                 self.power_spinbox.setValue(int(value))
-            elif param_name == 'formula_type':
+            elif param_name == "formula_type":
                 formula_idx = int(value)
                 self.formula_combobox.setCurrentIndex(formula_idx)
                 if formula_idx == 0:
@@ -543,10 +570,10 @@ class JuliaSetUI(QMainWindow):
             self.c_imag = self.c_imag_slider.value() / 100.0
             self.c_real_label.setText(f"{self.c_real:.3f}")
             self.c_imag_label.setText(f"{self.c_imag:.3f}")
-            
+
             self.max_iter = self.max_iter_spinbox.value()
             self.power = self.power_spinbox.value()
-            
+
             formula_idx = self.formula_combobox.currentIndex()
             if formula_idx == 0:
                 self.formula_type = "standard"
@@ -554,18 +581,22 @@ class JuliaSetUI(QMainWindow):
                 self.formula_type = "burning_ship"
             else:
                 self.formula_type = "mandelbar"
-            
+
         # Update status
         self.status_label.setText(f"Calculating: c = {self.c_real} + {self.c_imag}i")
-        
+
         # First stop any existing calculation
-        if hasattr(self, 'julia_thread') and self.julia_thread is not None and self.julia_thread.isRunning():
+        if (
+            hasattr(self, "julia_thread")
+            and self.julia_thread is not None
+            and self.julia_thread.isRunning()
+        ):
             self.julia_thread.stop()
-        
+
         # Use debouncing for slider movements
         if self.c_real_slider.isSliderDown() or self.c_imag_slider.isSliderDown():
             # When slider is being dragged, use a timer to reduce calculation frequency
-            if hasattr(self, 'calculation_timer'):
+            if hasattr(self, "calculation_timer"):
                 self.calculation_timer.stop()
             self.calculation_timer.start(30)  # Short delay for smoothness
         else:
@@ -575,19 +606,27 @@ class JuliaSetUI(QMainWindow):
     def trigger_calculation(self):
         """Start the actual calculation"""
         # Stop any existing calculation
-        if hasattr(self, 'julia_thread') and self.julia_thread is not None and self.julia_thread.isRunning():
+        if (
+            hasattr(self, "julia_thread")
+            and self.julia_thread is not None
+            and self.julia_thread.isRunning()
+        ):
             self.julia_thread.stop()
-            
+
         # Determine if sliders are being actively moved
-        slider_active = self.c_real_slider.isSliderDown() or self.c_imag_slider.isSliderDown()
-        
+        slider_active = (
+            self.c_real_slider.isSliderDown() or self.c_imag_slider.isSliderDown()
+        )
+
         # Set resolution based on whether sliders are being moved
         resolution = self.resolution
         if slider_active:
             # Use lower resolution during slider movement for better responsiveness
-            resolution = (max(100, self.resolution[0] // 2), 
-                         max(100, self.resolution[1] // 2))
-            
+            resolution = (
+                max(100, self.resolution[0] // 2),
+                max(100, self.resolution[1] // 2),
+            )
+
         # Check if we can use cache
         bounds = (self.xmin, self.xmax, self.ymin, self.ymax)
         if not slider_active and self.enable_cache_checkbox.isChecked():
@@ -608,29 +647,29 @@ class JuliaSetUI(QMainWindow):
                 return
             except Exception as e:
                 print(f"Cache error: {e}, falling back to direct calculation")
-        
+
         # Update the existing thread parameters instead of creating a new one
         x_res, y_res = resolution
         self.julia_thread.update_params(
-            x_res, 
+            x_res,
             y_res,
-            self.xmin, 
-            self.xmax, 
-            self.ymin, 
+            self.xmin,
+            self.xmax,
+            self.ymin,
             self.ymax,
-            self.z_abs_max, 
+            self.z_abs_max,
             self.max_iter,
-            self.c_real, 
-            self.c_imag, 
+            self.c_real,
+            self.c_imag,
             self.power,
-            self.formula_type
+            self.formula_type,
         )
-        
+
         # Show the loading animation if we have one
         self.status_label.setText("Calculating...")
-        if hasattr(self, 'loading_movie'):
+        if hasattr(self, "loading_movie"):
             self.loading_movie.start()
-        
+
         # Start the calculation thread (stop previous execution if running)
         if self.julia_thread.isRunning():
             self.julia_thread.stop()
@@ -641,13 +680,16 @@ class JuliaSetUI(QMainWindow):
         """Update the display with the calculation result"""
         self.current_result = result
         self.update_display()
-        
+
         # Hide loading animation if we have one
-        if hasattr(self, 'loading_movie'):
+        if hasattr(self, "loading_movie"):
             self.loading_movie.stop()
-            
+
         # Only update status if sliders aren't being moved to avoid flicker
-        if not self.c_real_slider.isSliderDown() and not self.c_imag_slider.isSliderDown():
+        if (
+            not self.c_real_slider.isSliderDown()
+            and not self.c_imag_slider.isSliderDown()
+        ):
             self.status_label.setText(f"c = {self.c_real:.3f} + {self.c_imag:.3f}i")
 
     def update_display(self):
